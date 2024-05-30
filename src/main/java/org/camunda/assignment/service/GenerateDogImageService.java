@@ -18,13 +18,13 @@ public class GenerateDogImageService implements GenerateAnimalImage{
 
     @Autowired
     PlaceDogAPI placeDogAPI;
-
+    private static final String IMAGE_TYPE="jpeg";
     public Binary generateImage() throws CustomError {
         try (Response response = placeDogAPI.getDogImage()) {
             InputStream is = response.body().asInputStream();
             BufferedImage image=ImageIO.read(is);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "jpeg", baos);
+            ImageIO.write(image, IMAGE_TYPE, baos);
 
             byte[] imageBytes = baos.toByteArray();
 

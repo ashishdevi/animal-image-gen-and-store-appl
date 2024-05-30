@@ -17,6 +17,12 @@ env:
   
   spring.data.mongodb.uri: mongodb://localhost:27017/ImageStore?retryWrites=true&w=majority
 
+  app.bearapi.url: https://placebear.com/g
+  app.kittenapi.url: https://placekitten.com
+  app.dogapi.url: https://place.dog
+
+  app.bpnm.process.id: Process_0rle9ea
+
 replicaCount: 1
 
 image:

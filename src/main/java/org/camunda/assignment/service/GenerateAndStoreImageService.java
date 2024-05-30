@@ -10,6 +10,7 @@ import org.camunda.assignment.model.Image;
 import org.camunda.assignment.repository.ImageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -18,16 +19,14 @@ import java.util.Map;
 public class GenerateAndStoreImageService {
 
     @Autowired
-    PlaceDogAPI placeDogAPI;
+    ImageObjectMapperImpl imageObjectMapper;
 
-@Autowired
-ImageObjectMapperImpl imageObjectMapper;
+    @Value("${app.bpnm.process.id}")
+    private String bpmProcessId;
 
+    private static final String PROCESS_VARIABLE_NAME="imageType";
     @Autowired
     ImageRepository imageRepository;
-
-    @Autowired
-    GenerateDogImageService generateDogImageService;
 
     @Autowired
     private ZeebeClient zeebeClient;
@@ -44,9 +43,9 @@ ImageObjectMapperImpl imageObjectMapper;
         final ProcessInstanceResult processInstanceResult =
                 zeebeClient
                         .newCreateInstanceCommand()
-                        .bpmnProcessId("Process_0rle9ea")
+                        .bpmnProcessId(bpmProcessId)
                         .latestVersion()
-                        .variables(Map.of("imageType", new String(imageType)))
+                        .variables(Map.of(PROCESS_VARIABLE_NAME, new String(imageType)))
                         .withResult() // to await the completion of process execution and return result
                         .send()
 //                        .exceptionally(t -> {throw new RuntimeException("Could not throw BPMN error: " + t.getMessage(), t);})
@@ -57,7 +56,7 @@ ImageObjectMapperImpl imageObjectMapper;
         if(processInstanceResult.getVariablesAsMap().containsKey("ErrorCode")){
             throw new CustomError("INTERNAL_SERVER_ERROR", (String) processInstanceResult.getVariable("ErrorCode"),"500");
         }
-        imageData.setImageId((String) processInstanceResult.getVariable("imageId"));
+        imageData.setImageId((String) processInstanceResult.getVariable(PROCESS_VARIABLE_NAME));
         imageData.setImageType(imageType);
         return imageData;
 

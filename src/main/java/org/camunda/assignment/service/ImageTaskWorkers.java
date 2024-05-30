@@ -30,6 +30,8 @@ public class ImageTaskWorkers {
     @Autowired
     ImageRepository imageRepository;
 
+    private static final String PROCESS_VARIABLE_NAME="imageId";
+
     @JobWorker(type = "generateAndSaveDogImage")
     public Map<String, Object> generateAndSaveDogImage(final JobClient client, final ActivatedJob job, @Variable String imageType) throws CustomError {
         Image image;
@@ -43,9 +45,9 @@ public class ImageTaskWorkers {
             throw new ZeebeBpmnError("INTERNAL_SERVER_ERROR","Internal server error has occured");
         }
         if(null!= image){
-            return Collections.singletonMap("imageId", image.getImageId());
+            return Collections.singletonMap(PROCESS_VARIABLE_NAME, image.getImageId());
         }
-        else return Collections.singletonMap("imageId", null);
+        else return Collections.singletonMap(PROCESS_VARIABLE_NAME, null);
     }
 
     @JobWorker(type = "generateAndSaveBearImage")
@@ -60,8 +62,8 @@ public class ImageTaskWorkers {
         } catch (CustomError e) {
             throw new ZeebeBpmnError("INTERNAL_SERVER_ERROR","Internal server error has occured");
         }
-        if(null!= image) return Collections.singletonMap("imageId", image.getImageId());
-        else return Collections.singletonMap("imageId", null);
+        if(null!= image) return Collections.singletonMap(PROCESS_VARIABLE_NAME, image.getImageId());
+        else return Collections.singletonMap(PROCESS_VARIABLE_NAME, null);
     }
 
 
@@ -77,8 +79,8 @@ public class ImageTaskWorkers {
         } catch (CustomError e) {
             throw new ZeebeBpmnError("INTERNAL_SERVER_ERROR","Internal server error has occured");
         }
-        if(null!= image) return Collections.singletonMap("imageId", image.getImageId());
-        else return Collections.singletonMap("imageId", null);
+        if(null!= image) return Collections.singletonMap(PROCESS_VARIABLE_NAME, image.getImageId());
+        else return Collections.singletonMap(PROCESS_VARIABLE_NAME, null);
     }
 
     @JobWorker(type = "commonErrorLogger")

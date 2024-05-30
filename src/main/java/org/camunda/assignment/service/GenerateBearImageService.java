@@ -19,12 +19,14 @@ public class GenerateBearImageService implements GenerateAnimalImage{
     @Autowired
     PlaceBearAPI placeBearAPI;
 
+    private static final String IMAGE_TYPE="jpeg";
+
     public Binary generateImage() throws CustomError {
         try (Response response = placeBearAPI.getBearImage()) {
             InputStream is = response.body().asInputStream();
             BufferedImage image=ImageIO.read(is);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "jpeg", baos);
+            ImageIO.write(image, IMAGE_TYPE, baos);
 
         byte[] imageBytes = baos.toByteArray();
         return new Binary(imageBytes);
