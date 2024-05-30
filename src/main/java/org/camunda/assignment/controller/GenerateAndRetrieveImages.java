@@ -20,13 +20,13 @@ public class GenerateAndRetrieveImages {
     @Autowired
     GenerateAndStoreImageService generateAndStoreService;
     @PostMapping(value = "/generateandsave", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ImageData> generateAndSaveImage(ImageData imageData) throws CustomError, IOException {
+    public ResponseEntity<ImageData> generateAndSaveImage(ImageData imageData) throws CustomError {
         ValidateRequest.validateGenerationRequest(imageData);
         return ResponseEntity.ok(generateAndStoreService.createAndStoreAnimalImage(imageData.getImageType()));
     }
 
     @GetMapping(value = "/{imageId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ImageData> getEmployeesByEmployeeId(@PathVariable String imageId) throws CustomError {
+    public ResponseEntity<ImageData> getImagesByImageId(@PathVariable String imageId) throws CustomError {
         ValidateRequest.validateGetRequestParam(imageId);
         return ResponseEntity.ok(generateAndStoreService.retrieveImageByImageId(imageId));
 

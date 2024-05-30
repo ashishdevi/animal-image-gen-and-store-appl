@@ -31,13 +31,6 @@ public class GenerateAndStoreImageService {
     @Autowired
     private ZeebeClient zeebeClient;
 
-    private static ProcessInstanceResult apply(Throwable t) throws CustomError{
-        if (t.getMessage().equals("INVALID_IMAGE_TYPE")) {
-            throw new CustomError("IMAGE_TYPE_INVALID", "Image type is not valid", "400");
-        } else {
-            throw new CustomError("IMAGE_TYPE_INVALID", "Image type is not valid", "400");
-        }
-    }
 
     public ImageData createAndStoreAnimalImage(String imageType) throws CustomError {
         final ProcessInstanceResult processInstanceResult =
