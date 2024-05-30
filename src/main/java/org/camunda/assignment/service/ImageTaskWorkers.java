@@ -4,6 +4,8 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.annotation.Variable;
+import io.camunda.zeebe.spring.client.exception.ZeebeBpmnError;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.assignment.error.CustomError;
 import org.camunda.assignment.model.Image;
 import org.camunda.assignment.repository.ImageRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class ImageTaskWorkers {
 
@@ -28,7 +31,7 @@ public class ImageTaskWorkers {
     ImageRepository imageRepository;
 
     @JobWorker(type = "generateAndSaveDogImage")
-    public Map<String, Object> generateAndSaveDogImage(final JobClient client, final ActivatedJob job, @Variable String imageType) {
+    public Map<String, Object> generateAndSaveDogImage(final JobClient client, final ActivatedJob job, @Variable String imageType) throws CustomError {
         Image image;
         try {
         Image newImage = new Image();
@@ -37,9 +40,11 @@ public class ImageTaskWorkers {
         image =  imageRepository.save(newImage);
 
         } catch (CustomError e) {
-            throw new RuntimeException(e);
+            throw new ZeebeBpmnError("INTERNAL_SERVER_ERROR","Internal server error has occured");
         }
-        if(null!= image) return Collections.singletonMap("imageId", image.getImageId());
+        if(null!= image){
+            return Collections.singletonMap("imageId", image.getImageId());
+        }
         else return Collections.singletonMap("imageId", null);
     }
 
@@ -74,5 +79,10 @@ public class ImageTaskWorkers {
         }
         if(null!= image) return Collections.singletonMap("imageId", image.getImageId());
         else return Collections.singletonMap("imageId", null);
+    }
+
+    @JobWorker(type = "commonErrorLogger")
+    public void commonErrorLogger(final JobClient client, final ActivatedJob job, @Variable String imageType) {
+        job.getVariablesAsMap().entrySet().stream().forEach(l -> log.error((String) l.getValue()));
     }
 }

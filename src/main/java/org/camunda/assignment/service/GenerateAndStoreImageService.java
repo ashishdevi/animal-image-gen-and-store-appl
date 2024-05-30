@@ -31,6 +31,15 @@ ImageObjectMapperImpl imageObjectMapper;
 
     @Autowired
     private ZeebeClient zeebeClient;
+
+    private static ProcessInstanceResult apply(Throwable t) throws CustomError{
+        if (t.getMessage().equals("INVALID_IMAGE_TYPE")) {
+            throw new CustomError("IMAGE_TYPE_INVALID", "Image type is not valid", "400");
+        } else {
+            throw new CustomError("IMAGE_TYPE_INVALID", "Image type is not valid", "400");
+        }
+    }
+
     public ImageData createAndStoreAnimalImage(String imageType) throws CustomError {
         final ProcessInstanceResult processInstanceResult =
                 zeebeClient
@@ -40,9 +49,14 @@ ImageObjectMapperImpl imageObjectMapper;
                         .variables(Map.of("imageType", new String(imageType)))
                         .withResult() // to await the completion of process execution and return result
                         .send()
+//                        .exceptionally(t -> {throw new RuntimeException("Could not throw BPMN error: " + t.getMessage(), t);})
                         .join();
 
         ImageData imageData = new ImageData();
+
+        if(processInstanceResult.getVariablesAsMap().containsKey("ErrorCode")){
+            throw new CustomError("INTERNAL_SERVER_ERROR", (String) processInstanceResult.getVariable("ErrorCode"),"500");
+        }
         imageData.setImageId((String) processInstanceResult.getVariable("imageId"));
         imageData.setImageType(imageType);
         return imageData;
