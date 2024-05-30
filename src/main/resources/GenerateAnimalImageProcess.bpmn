@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="2e63a9a" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0" camunda:diagramRelationId="fb97ed65-7c0a-4ae4-807f-5a9347427ded">
+  <bpmn:process id="Process_0rle9ea" name="New BPMN Diagram" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>Flow_19zh53p</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_19zh53p" sourceRef="StartEvent_1" targetRef="Activity_192w0bk" />
+    <bpmn:businessRuleTask id="Activity_192w0bk" name="MakeDecision">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="Decision_10zctit" resultVariable="WorkerName" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19zh53p</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ldzz43</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="Gateway_0iyxhkn" name="CallWorker">
+      <bpmn:incoming>Flow_0ldzz43</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pc0llp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0epq8tw</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0h7lr92</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1omdwla</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0ldzz43" sourceRef="Activity_192w0bk" targetRef="Gateway_0iyxhkn" />
+    <bpmn:sequenceFlow id="Flow_0pc0llp" name="generateAndSaveKittenImage" sourceRef="Gateway_0iyxhkn" targetRef="Activity_0thzg2b">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=WorkerName="generateAndSaveKittenImage"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0epq8tw" name="generateAndSaveDogImage" sourceRef="Gateway_0iyxhkn" targetRef="Activity_1l2core">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=WorkerName="generateAndSaveDogImage"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0h7lr92" name="generateAndSaveBearImage" sourceRef="Gateway_0iyxhkn" targetRef="Activity_1xaji8y">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=WorkerName="generateAndSaveKittenImage"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0jrsv4z">
+      <bpmn:incoming>Flow_1asg5zp</bpmn:incoming>
+      <bpmn:incoming>Flow_17r087b</bpmn:incoming>
+      <bpmn:incoming>Flow_1rm0glu</bpmn:incoming>
+      <bpmn:outgoing>Flow_14ue3xm</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1asg5zp" sourceRef="Activity_0thzg2b" targetRef="Gateway_0jrsv4z" />
+    <bpmn:sequenceFlow id="Flow_17r087b" sourceRef="Activity_1l2core" targetRef="Gateway_0jrsv4z" />
+    <bpmn:sequenceFlow id="Flow_1rm0glu" sourceRef="Activity_1xaji8y" targetRef="Gateway_0jrsv4z" />
+    <bpmn:endEvent id="Event_0ei0wi3" name="End">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=imageId" target="imageId" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_14ue3xm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_14ue3xm" sourceRef="Gateway_0jrsv4z" targetRef="Event_0ei0wi3" />
+    <bpmn:businessRuleTask id="Activity_0thzg2b" name="GenerateAndSaveKittenImage">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="generateAndSaveKittenImage" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0pc0llp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1asg5zp</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:businessRuleTask id="Activity_1l2core" name="GenerateAndSaveDogImage">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="generateAndSaveDogImage" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0epq8tw</bpmn:incoming>
+      <bpmn:outgoing>Flow_17r087b</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:businessRuleTask id="Activity_1xaji8y" name="GenerateAndSaveBearImage">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="generateAndSaveBearImage" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0h7lr92</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rm0glu</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:endEvent id="Event_18u9a57" name="Error">
+      <bpmn:incoming>Flow_1omdwla</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0pvmiic" errorRef="Error_008gltt" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1omdwla" name="else" sourceRef="Gateway_0iyxhkn" targetRef="Event_18u9a57">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=WorkerName=null</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmn:error id="Error_008gltt" name="INVALID_IMAGE_TYPE" errorCode="400" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0rle9ea">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="265" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wblzap_di" bpmnElement="Activity_192w0bk">
+        <dc:Bounds x="230" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0iyxhkn_di" bpmnElement="Gateway_0iyxhkn" isMarkerVisible="true">
+        <dc:Bounds x="375" y="215" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="435" y="233" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jrsv4z_di" bpmnElement="Gateway_0jrsv4z" isMarkerVisible="true">
+        <dc:Bounds x="665" y="215" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ei0wi3_di" bpmnElement="Event_0ei0wi3">
+        <dc:Bounds x="812" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="820" y="198" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09o0lln_di" bpmnElement="Activity_0thzg2b">
+        <dc:Bounds x="470" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dt5fv1_di" bpmnElement="Activity_1l2core">
+        <dc:Bounds x="470" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hygcwb_di" bpmnElement="Activity_1xaji8y">
+        <dc:Bounds x="470" y="310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_18u9a57_di" bpmnElement="Event_18u9a57">
+        <dc:Bounds x="472" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="477" y="485" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_19zh53p_di" bpmnElement="Flow_19zh53p">
+        <di:waypoint x="188" y="240" />
+        <di:waypoint x="230" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ldzz43_di" bpmnElement="Flow_0ldzz43">
+        <di:waypoint x="330" y="240" />
+        <di:waypoint x="375" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pc0llp_di" bpmnElement="Flow_0pc0llp">
+        <di:waypoint x="400" y="215" />
+        <di:waypoint x="400" y="120" />
+        <di:waypoint x="470" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="371" y="165" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0epq8tw_di" bpmnElement="Flow_0epq8tw">
+        <di:waypoint x="425" y="240" />
+        <di:waypoint x="470" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="406" y="222" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h7lr92_di" bpmnElement="Flow_0h7lr92">
+        <di:waypoint x="400" y="265" />
+        <di:waypoint x="400" y="350" />
+        <di:waypoint x="470" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="374" y="305" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1asg5zp_di" bpmnElement="Flow_1asg5zp">
+        <di:waypoint x="570" y="120" />
+        <di:waypoint x="690" y="120" />
+        <di:waypoint x="690" y="215" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17r087b_di" bpmnElement="Flow_17r087b">
+        <di:waypoint x="570" y="240" />
+        <di:waypoint x="665" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rm0glu_di" bpmnElement="Flow_1rm0glu">
+        <di:waypoint x="570" y="350" />
+        <di:waypoint x="690" y="350" />
+        <di:waypoint x="690" y="265" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14ue3xm_di" bpmnElement="Flow_14ue3xm">
+        <di:waypoint x="715" y="240" />
+        <di:waypoint x="812" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1omdwla_di" bpmnElement="Flow_1omdwla">
+        <di:waypoint x="400" y="265" />
+        <di:waypoint x="400" y="460" />
+        <di:waypoint x="472" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="405" y="360" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_0kqkigr" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Web Modeler" exporterVersion="2e63a9a" camunda:diagramRelationId="c545aa05-5375-432d-ab50-464456e014b1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0">
+  <decision id="Decision_10zctit" name="AnimalImageDecision">
+    <decisionTable id="DecisionTable_0f65sl0">
+      <input id="Input_1">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>imageType</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" name="WorkerName" typeRef="string" />
+      <rule id="DecisionRule_1fo5san">
+        <inputEntry id="UnaryTests_1dfo8na">
+          <text>"KITTEN"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0iuj0x8">
+          <text>"generateAndSaveKittenImage"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ts1zrq">
+        <inputEntry id="UnaryTests_1lo1xzt">
+          <text>"DOG"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1y7sa4e">
+          <text>"generateAndSaveDogImage"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1pb2nt7">
+        <inputEntry id="UnaryTests_0p0yofu">
+          <text>"BEAR"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0z8q3yx">
+          <text>"generateAndSaveBearImage"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_10zctit">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -1,0 +1,128 @@
+openapi: 3.0.3
+info:
+  title: Random image generator and store process
+  description: |-
+    This API geberates random photos of a selected animal and stores and returns it in the response. Currently API supports random pictures of Kitten, Bear and Dog only. For any other animals in the request, it will rreturn invalid request error.
+  contact:
+    email: ashishdevi@gmail.com
+  version: 1.0.0
+servers:
+  - url: https://https://localhost:8082/api/animal/images
+tags:
+  - name: Animal image generator and store
+    description: Generates and saves image of an animal of choice.
+
+paths:
+  /generateandsave:
+    post:
+      tags:
+        - Animal image generator and store
+      summary: Generates a new image and saves it to the database
+      description: OPeration generates a new image and saves it, returns imageId and an animal image(optionally) based on input request.
+      operationId: GenerateAndSaveRandomImage
+      requestBody:
+        description: GenerateAndSaveRandomImage request
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ImageData'
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/ImageData'          
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{imageId}:
+    get:
+      tags:
+        - Animal image generator and store
+      summary: Returns image details by image id
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findPetsByStatus
+      parameters:
+        - name: imageId
+          in: path
+          description: Image id of a stored image
+          required: true
+          schema:
+            type: string
+        - name: returnImage
+          in: query
+          description: Pass true if image id is needed in response
+          required: false
+          schema:
+            type: boolean
+            default: false
+
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/ImageData'  
+        '404':
+          description: Image not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+components:
+  schemas:
+    ImageData:
+      required:
+        - imageType
+      type: object
+      properties:
+        imageType:
+          type: string
+          description: Supported animal name
+          enum:
+            - KITTEN
+            - DOG
+            - BEAR
+        returnImage:
+          type: boolean
+          description: Returns image in the response if this flag is set to true
+          example: true
+          writeOnly: true
+        image:
+          type: string
+          format: binary
+          readOnly: true
+          
+    Error:
+      required:
+        - errorCode
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: Error code of the returned error.
+        errorDescription:
+          type: string
+          description: Detailed error description of the returned error.
+
