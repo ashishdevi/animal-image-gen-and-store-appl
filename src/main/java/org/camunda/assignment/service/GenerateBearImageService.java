@@ -30,7 +30,7 @@ public class GenerateBearImageService implements GenerateAnimalImage{
         return new Binary(imageBytes);
         } catch (IOException e) {
             throw new CustomError("INTERNAL_SERVER_ERROR","Bear image generation API is down.","500");
-            //log
+
         } catch (Exception e) {
             throw new CustomError("INTERNAL_SERVER_ERROR","Bear image generation API is down.","500");
             //log

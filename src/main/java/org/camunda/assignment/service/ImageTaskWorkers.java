@@ -58,7 +58,7 @@ public class ImageTaskWorkers {
             image =  imageRepository.save(newImage);
 
         } catch (CustomError e) {
-            throw new RuntimeException(e);
+            throw new ZeebeBpmnError("INTERNAL_SERVER_ERROR","Internal server error has occured");
         }
         if(null!= image) return Collections.singletonMap("imageId", image.getImageId());
         else return Collections.singletonMap("imageId", null);
@@ -75,14 +75,14 @@ public class ImageTaskWorkers {
             image =  imageRepository.save(newImage);
 
         } catch (CustomError e) {
-            throw new RuntimeException(e);
+            throw new ZeebeBpmnError("INTERNAL_SERVER_ERROR","Internal server error has occured");
         }
         if(null!= image) return Collections.singletonMap("imageId", image.getImageId());
         else return Collections.singletonMap("imageId", null);
     }
 
     @JobWorker(type = "commonErrorLogger")
-    public void commonErrorLogger(final JobClient client, final ActivatedJob job, @Variable String imageType) {
-        job.getVariablesAsMap().entrySet().stream().forEach(l -> log.error((String) l.getValue()));
+    public void commonErrorLogger(final JobClient client, final ActivatedJob job) {
+        log.error("Process failed for process id: {} process versiob: {} and ",job.getBpmnProcessId(),job.getProcessDefinitionVersion());
     }
 }
