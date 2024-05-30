@@ -23,7 +23,7 @@ paths:
       requestBody:
         description: GenerateAndSaveRandomImage request
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               $ref: '#/components/schemas/ImageData'
         required: true
@@ -61,13 +61,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: returnImage
-          in: query
-          description: Pass true if image id is needed in response
-          required: false
-          schema:
-            type: boolean
-            default: false
 
       responses:
         '201':
@@ -104,11 +97,10 @@ components:
             - KITTEN
             - DOG
             - BEAR
-        returnImage:
-          type: boolean
-          description: Returns image in the response if this flag is set to true
-          example: true
-          writeOnly: true
+        imageId:
+          type: string
+          description: Image reference
+          readOnly: true
         image:
           type: string
           format: binary
