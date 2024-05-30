@@ -19,7 +19,11 @@ public class ImageObjectMapperImpl implements  ImageObjectMapper {
         }
         ImageData imageData = new ImageData();
         imageData.setImageType(image.getImageType());
-        imageData.setImage(new String(Base64.encode(image.getImage().getData()), StandardCharsets.UTF_8));
+        if(null!=image.getImage()) {
+            imageData.setImage(new String(Base64.encode(image.getImage().getData()), StandardCharsets.UTF_8));
+        }else{
+            imageData.setImage(null);
+        }
         imageData.setImageId(image.getImageId());
         return imageData;
     }
@@ -31,7 +35,11 @@ public class ImageObjectMapperImpl implements  ImageObjectMapper {
         }
         Image image = new Image();
         image.setImageType(imageDto.getImageType());
-        image.setImage(new Binary(imageDto.getImage().getBytes(StandardCharsets.UTF_8)));
+        if(null!=imageDto.getImage()) {
+            image.setImage(new Binary(imageDto.getImage().getBytes(StandardCharsets.UTF_8)));
+        }else{
+            image.setImage(null);
+        }
         image.setImageId(imageDto.getImageId());
         return image;
     }

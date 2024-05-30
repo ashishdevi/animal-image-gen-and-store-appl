@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>index</title>
+</head>
+<body>
+
+<h1>Select the favourite animal</h1>
+<label>Favourite animal :</label> </t>
+<select name="imageType" id="imageTypeInput">
+    <option value="DOG">DOG</option>
+    <option value="KITTEN">KITTEN</option>
+    <option value="BEAR">BEAR</option>
+</select>
+<br/> <br/><br/>
+<button onclick="submitImageType()">Submit</button>
+</form>
+<br/>
+<h3>ImageId: <div id="displayImageId"></div></h3>
+<br/>
+<div id="responseDiv"></div>
+</body>
+<script>
+    function submitImageType(){
+        var imageType = document.getElementById('imageTypeInput').value;
+        const formData = new URLSearchParams();
+        formData.append('imageType', imageType);
+        fetch('/api/animalimages/generateandsave', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('GET Data: ', data);
+                document.getElementById('displayImageId').innerText = data.imageId;
+                fetch('/api/animalimages/'.concat(data.imageId))
+                .then(response => response.json())
+                .then(data => {
+                    console.log('POST Data: ', data);
+                    var img=document.createElement('img');
+                    img.src='data:image/png;base64,'.concat(data.image);
+                    var element = document.getElementById('responseDiv');
+                    element.innerHTML='';
+                    element.appendChild(img);
+                })
+                .catch(error => console.error('Error:', error));
+            })
+            .catch(error => console.error('Error:', error));
+
+
+
+    }
+</script>
+</html>
