@@ -1,0 +1,86 @@
+@startuml
+actor User as User
+participant webscreen as webscreen
+participant AnimalImageGeneratorRestAPI as AnimalImageGeneratorRestAPI
+participant CamundaSaasEngine as camundaSaasEngine
+queue genDogImageQueue as genDogImageQueue
+queue genBearImageQueue as genBearImageQueue
+queue genKittenImageQueue as genKittenImageQueue
+participant saveDogImageWorker as saveDogImageWorker
+participant saveKittenImageWorker as saveKittenImageWorker
+participant saveBearImageWorker as saveBearImageWorker
+participant PlaceBearAPI as PlaceBearAPI
+participant PlaceDogAPI as PlaceDogAPI
+participant PlaceKittenAPI as PlaceKittenAPI
+database Database as MongoDB
+
+User -> webscreen: Selects an animal Image
+activate webscreen
+webscreen-> AnimalImageGeneratorRestAPI: POST /generateandsave
+    activate AnimalImageGeneratorRestAPI
+    AnimalImageGeneratorRestAPI -> camundaSaasEngine: Start the process instance
+        activate camundaSaasEngine
+        camundaSaasEngine -> camundaSaasEngine: Take decision based on DMN table
+        alt Generate and save Dog Image
+            camundaSaasEngine -> genDogImageQueue: Send message on internal queue
+            activate genDogImageQueue
+                genDogImageQueue -> saveDogImageWorker: Call worker from camunda engine
+                    activate saveDogImageWorker
+                        saveDogImageWorker -> PlaceDogAPI: Get random dog image
+                        saveDogImageWorker <-- PlaceDogAPI: Return dog image
+                        activate MongoDB
+                            saveDogImageWorker -> MongoDB: save image
+                            saveDogImageWorker -> MongoDB: return imageId
+                        deactivate MongoDB    
+                        genDogImageQueue <-- saveDogImageWorker: return imageId
+                    deactivate saveDogImageWorker
+                camundaSaasEngine <-- genDogImageQueue: return imageId
+            deactivate genDogImageQueue
+
+        else alt Generate and save Bear Image
+            camundaSaasEngine -> genBearImageQueue: Send message on internal queue
+            activate genBearImageQueue
+                genBearImageQueue -> saveBearImageWorker: Call worker from camunda engine
+                    activate saveBearImageWorker
+                        saveBearImageWorker -> PlaceBearAPI: Get random bear image
+                        saveBearImageWorker <-- PlaceBearAPI: Return bear image
+                        activate MongoDB
+                            saveBearImageWorker -> MongoDB: save image
+                            saveBearImageWorker -> MongoDB: return imageId
+                        deactivate MongoDB
+                        genBearImageQueue <-- saveBearImageWorker: return imageId
+                    deactivate saveBearImageWorker
+                camundaSaasEngine <-- genBearImageQueue: return imageId 
+            deactivate genBearImageQueue
+             
+        else alt Generate and save Kitten Image
+            camundaSaasEngine -> genKittenImageQueue: Send message on internal queue
+            activate genKittenImageQueue
+                genKittenImageQueue -> saveKittenImageWorker: Call worker from camunda engine
+                    activate saveKittenImageWorker
+                        saveKittenImageWorker -> PlaceKittenAPI: Get random kitten image
+                        saveKittenImageWorker <-- PlaceKittenAPI: Return kitten image
+                        activate MongoDB
+                            saveKittenImageWorker -> MongoDB: save image
+                            saveKittenImageWorker -> MongoDB: return imageId
+                        deactivate MongoDB
+                        genKittenImageQueue <-- saveKittenImageWorker: return imageId
+                    deactivate saveKittenImageWorker
+                camundaSaasEngine <-- genKittenImageQueue: return imageId
+            deactivate genKittenImageQueue
+        end
+        AnimalImageGeneratorRestAPI <-- camundaSaasEngine: return imageId
+        deactivate camundaSaasEngine
+        webscreen<-- AnimalImageGeneratorRestAPI: return imageId
+    deactivate AnimalImageGeneratorRestAPI
+webscreen-> AnimalImageGeneratorRestAPI: GET /{imageId}
+    activate AnimalImageGeneratorRestAPI
+        AnimalImageGeneratorRestAPI -> MongoDB: Retrieve image by ImageId
+            activate MongoDB
+            AnimalImageGeneratorRestAPI <-- MongoDB: image
+            deactivate MongoDB
+    deactivate AnimalImageGeneratorRestAPI
+webscreen<-- AnimalImageGeneratorRestAPI: image
+webscreen -> webscreen: DisplayImage 
+deactivate webscreen
+@enduml
