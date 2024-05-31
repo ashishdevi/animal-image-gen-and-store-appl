@@ -168,7 +168,8 @@ Multiple status values can be provided with comma separated strings
    3. At some locations timeouts and other parameters are not configured.
    4. Authorization and authentication is not setup.
    5. Server certificate verification for external API is not done.
-2. Image and json sent in response should be multipart form data rather than sending it as part of json. If needed this can be improved.
-3. During design consideration, it was decided to include MongoDb because embedded version of MongoDB was possible along with other major design considerations. But currently because of some reason not able to boot internal MongoDB instance along with the app. App needs external MongoDB same as camunda engine.
-4. Image returned from external source is not scanned against vulnerabilities.
-5. NetworkPolicy is not added in helm chart to enable ingress and egress traffic
+2. Unit test cases using camunda library are pending. Unit test cases can be enhanced further.
+3. Image and json sent in response should be multipart form data rather than sending it as part of json. If needed this can be improved.
+4. During design consideration, it was decided to include MongoDb because embedded version of MongoDB was possible along with other major design considerations. But currently because of some reason not able to boot internal MongoDB instance along with the app. App needs external MongoDB same as camunda engine.
+5. Image returned from external source is not scanned against vulnerabilities.
+6. NetworkPolicy is not added in helm chart to enable ingress and egress traffic

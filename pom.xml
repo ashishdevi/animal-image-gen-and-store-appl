@@ -75,6 +75,18 @@
 		</dependency>
 		<dependency>
 			<groupId>io.camunda</groupId>
+			<artifactId>zeebe-process-test-extension</artifactId>
+			<version>8.5.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.camunda</groupId>
+			<artifactId>zeebe-process-test-extension-testcontainer</artifactId>
+			<version>8.5.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.camunda</groupId>
 			<artifactId>zeebe-client-java</artifactId>
 			<version>8.5.0</version>
 		</dependency>
