@@ -1,5 +1,5 @@
 # Camunda assignment to generate random animal images
-This application generates an image of a chosen animal (currently god, kitten and bear are only supported), saves that image and returns the image. Application is exposed using REST API and can also be consumed via an embedded interactive webpage.
+This application generates an image of a chosen animal (currently dog, kitten and bear are only supported), saves that image and returns the image. Application is exposed using REST API and can also be consumed via an embedded interactive webpage.
 
 This is primary a java based application containing following components/technologies
 1. Java spring boot (REST API and to host static web page)
@@ -11,7 +11,7 @@ This is primary a java based application containing following components/technol
 **Design:**
 ![Alt text](design-documents/ApplicationBlockDiagram.png?raw=true "Application components")
 **Explanation:**
-1. Current application is packaged in single jar file, so that it can be run easily on other machined.
+1. Current application is packaged in single jar file, so that it can be run easily on other machines.
 2. In my opinion, desired state should contain following different component for maintainability and scalling point of view
    1. Static web screens hosted in static web container or kubernetes pod hosting webcontainer like TomCat, JBoss or NGinx
    2. Separate spring boot application handling REST calls, this will also be responsible to interact with Camunda Saas engine and database.
@@ -24,7 +24,7 @@ This is primary a java based application containing following components/technol
       2. GET: /api/animalimages/{imageId} - Retrieves image against a generated imageId
    3. REST API/component interacts with two components based on request,
       1. Camunda engine: To initiate the process if generate Image (POST) call is received. Upon copletion, an iageId returned from process is returned back to the calling application as POST call response.
-      2. MongoDB: TO retrieve a stored image against imageId in case GET call is received.
+      2. MongoDB: To retrieve a stored image against imageId in case GET call is received.
    3. Camunda SaaS (Business process):
       1. Interacts with workers to generate and store the images. ImageId returned from workers is sent back to the calling application.
    4. Zeebe client(workers): 
@@ -98,9 +98,10 @@ Multiple status values can be provided with comma separated strings
    1. Reason: To make is simpler to run application on most of the machines.
 2. MongoDb as database:
    1. Reason: Since image is unstructured data, in current scope searching is purely based on primary key, it is easier to configure MongoDB
-      1. At the time of decisioning I decided to use mondo DB because it's embedded version is also available, but that is not working in the current project. 
-3. By default trust server SSL certificates
-4. Not to implement authentication and authorization on API
+      1. At the time of decisioning I decided to use mondo DB because it's embedded version is also available.
+3. Not to load image data in camunda engine so that load will not be exerted on the proces engine.
+4. By default trust server SSL certificates
+5. Because of time limitations, not to implement authentication and authorization on API
 *********************************************
 
 **How to set up project:**
@@ -150,18 +151,24 @@ Multiple status values can be provided with comma separated strings
 **Other artifacts:**
 1. Dockerfile: Present in docker-context root folder
 2. helmcharts: Present in helm-context folder.
+   1. Multiple values-<<env>>.yaml files can be added in the helm configuration to enable application deployment for multiple environment.
+   2. To Generate kubernetes template files, execute following command after traversing to helm-context folder
+      ```shell
+      helm template animal-image-gen-and-store-appl
+      ```
 3. API specification: AnimalImageGeneratorAndStore.yaml
 4. Draw io design file: CamundaAssignment_BlockOverview.drawio
 5. Plant UML sequence diagram: AnimalImageeStoreSequenceDIagram.puml
-6. Already built jar file to start testing already.
+6. Already built jar file to start testing already.(not part of attachment))
 
 **Limitations of current code:**
-1. Far from production ready and meant only to solve assignment problems.
-2. Error handling and codes can be improved further.
-3. Unit testing needs to be improved further.
-4. During design consideration, I decided to include mongoDb because embedded version of MongoDB was possible along with other major design considerations. But currently because of some reason not able to boot internal MongoDB instance along with the app. App needs external MongoDB same as camunda engine.
-5. At some locations timeouts and other parameters are not configured.
-6. Authorization and authentication is not setup.
-7. Server certificate verification for external API is not done.
-8. Image returned from external source is not scanned against vulnerabilities.
-9. NetworkPolicy is not added in helm chart to enable ingress and egress traffic
+1. Considering the nature of the project as an assignment
+   1. It does not have production level stability.
+   2. Error handling and codes can be improved further.
+   3. At some locations timeouts and other parameters are not configured.
+   4. Authorization and authentication is not setup.
+   5. Server certificate verification for external API is not done.
+2. Image and json sent in response should be multipart form data rather than sending it as part of json. If needed this can be improved.
+3. During design consideration, it was decided to include MongoDb because embedded version of MongoDB was possible along with other major design considerations. But currently because of some reason not able to boot internal MongoDB instance along with the app. App needs external MongoDB same as camunda engine.
+4. Image returned from external source is not scanned against vulnerabilities.
+5. NetworkPolicy is not added in helm chart to enable ingress and egress traffic
