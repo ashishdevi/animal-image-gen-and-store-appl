@@ -24,7 +24,8 @@ public class GenerateAndStoreImageService {
     @Value("${app.bpnm.process.id}")
     private String bpmProcessId;
 
-    private static final String PROCESS_VARIABLE_NAME="imageType";
+    private static final String IMAGE_TYPE_PROCESS_VARIABLE_NAME="imageType";
+    private static final String IMAGE_ID_PROCESS_VARIABLE_NAME="imageId";
     @Autowired
     ImageRepository imageRepository;
 
@@ -38,7 +39,7 @@ public class GenerateAndStoreImageService {
                         .newCreateInstanceCommand()
                         .bpmnProcessId(bpmProcessId)
                         .latestVersion()
-                        .variables(Map.of(PROCESS_VARIABLE_NAME, new String(imageType)))
+                        .variables(Map.of(IMAGE_TYPE_PROCESS_VARIABLE_NAME, new String(imageType)))
                         .withResult() // to await the completion of process execution and return result
                         .send()
 //                        .exceptionally(t -> {throw new RuntimeException("Could not throw BPMN error: " + t.getMessage(), t);})
@@ -49,7 +50,7 @@ public class GenerateAndStoreImageService {
         if(processInstanceResult.getVariablesAsMap().containsKey("ErrorCode")){
             throw new CustomError("INTERNAL_SERVER_ERROR", (String) processInstanceResult.getVariable("ErrorCode"),"500");
         }
-        imageData.setImageId((String) processInstanceResult.getVariable(PROCESS_VARIABLE_NAME));
+        imageData.setImageId((String) processInstanceResult.getVariable(IMAGE_ID_PROCESS_VARIABLE_NAME));
         imageData.setImageType(imageType);
         return imageData;
 
